@@ -1,0 +1,406 @@
+#include <stdio.h>
+#include <windows.h>
+#include <conio.h>
+#include <iostream> 
+#include <string>
+#include <stdlib.h>
+#include <time.h>
+#include <math.h>
+using namespace std;
+int a[150][150];
+int visit[15000];
+int x,y;
+void picture(int,int);
+void victory(void);
+void level1(void);
+void level2(void);
+string cheat;
+int main()
+{
+	system("cls");
+	cout<<"按1进入第一关，按2进入第二关，按3退出\n";
+	char t=getch();
+	if(t==49)
+	{
+	level1();
+	}
+	else if(t==50){
+	level2();
+	}
+	else if(t==51){
+		exit(0);
+	}
+	return 0;
+}
+
+void level1()
+{ 	
+
+	cheat="";
+	firstlevel:
+	int hang,lie,lshang,lslie,ls,wuyong,tim,bian,tobian;
+    bian=1;
+    tobian=0;
+    char m;
+	system("cls");			//清屏 
+    for(x=1;x<=15;x++){
+    	for(y=1;y<=100;y++){
+    		if((y==13&&x!=4)||
+			(y==17&&x!=8)||
+			(y==20&&x!=5)||
+			(y==25&&x!=3)||
+			(y==33&&x!=4)||
+			(y==50&&x!=5)||
+			(y==43&&x!=12)||
+			(y==47&&x!=4)||
+			(y==56&&x!=5))		//y为墙壁所处列，x为墙壁通道 
+			{
+    			a[x][y]=2;
+			}
+			else
+				a[x][y]=0;
+		}
+	}
+	hang=7;
+	lie=1;
+	a[7][1]=1;				//初始小人位置 
+	a[7][100]=3;			//奖杯位置 
+	tim=0;
+ls=0;
+wuyong=0;
+while(1){
+	picture(15,100);
+if (ls==3){
+	victory();
+}
+char shuru=getch();			//输入awsd 
+lshang=hang;				//看下行解释 
+lslie=lie;
+if(cheat!="sandevistan") {        			//lslie,lshang临时储存小人现在所处位置的列行值
+a[lshang][lslie]=ls;      	//ls储存现小人所处位置原本的物件，这步将小人所处位置原先的东西重现显现出来 
+}
+switch(shuru){
+	case 119:
+		hang-=1;
+		break;
+	case 115:
+		hang+=1;
+		break;
+	case 97:
+		lie-=1;
+		break;
+	case 100:
+		lie+=1;
+		break;
+	case 112:
+	cout<<"请输入作弊码：";
+	cin>>cheat;
+}
+ls=a[hang][lie];			//储存小人即将进入的位置的物件 
+a[hang][lie]=1;
+system("cls");
+if(ls==2&&cheat!="cheat"){
+        cout<<"输掉了捏，按任意按键重新来过吧~或者按0返回主菜单~";
+    char kongzhi=getch();	//kongzhi储存任意键，并判断是否输入为0 
+    if(kongzhi==48){
+        main();
+    }
+    system("cls");
+    goto firstlevel;			//重开 
+}
+if(cheat=="sandevistan"){
+	continue;
+}
+for(y=1;y<=90;y++){
+	for(x=1;x<=15;x++){
+  	  	if((a[x][y]!=2&&a[x][y]!=1)&&((tim%2==0)&&((y==13)||(y==17)||(y==20)||(y==25)||(y==33)||(y==50)||(y==43)||(y==47)||(y==56))))
+			{				//tim记录小人移动的次数，每移动两次则墙壁移动一次 
+   	 	a[x+bian][y]=0;
+   		 a[x][y]=2;
+    	x=x+bian;			//bian=1时墙壁下移 ，-1时墙壁上移 
+    	if((x==14)||(x==2)){
+    	tobian=1;			// 有墙壁即将触碰边界则tobian=1，从下次所有墙壁移动起时所有墙壁改变移动方向 
+		}
+    	break;
+   		 }
+	}
+}
+if(tobian==1){
+	bian=-bian;
+	tobian=0;
+}
+tim++;
+
+}
+}
+
+
+//------------------------------------------------------------------------------------
+
+
+void level2()
+{
+	secondlevel:
+	int hang,lie,lshang,lslie,ls;
+	for(x=1;x<=15;x++)
+	{
+		for(y=1;y<=100;y++){
+			a[x][y]=0;
+		}
+	}
+	int suiji;
+	int b[15][100];
+	for(x=1;x<=15;x++){
+		for(y=1;y<=100;y++){
+			b[x][y]=0;
+		}
+	}
+	hang=7;
+	lshang=7;
+	lslie=50;
+	lie=50;
+	int maxhang,minhang,maxlie,minlie;
+	minhang=15;
+	minlie=100;
+	srand((unsigned int)time(NULL));
+				for(int t=1;t<=200;t++){
+						while(b[hang][lie]==1){
+							suiji=rand()%8+1;
+							switch(suiji){
+								case 1:
+								hang--;
+								break;
+								case 2:
+								hang++;
+								break;
+								case 3:
+								lie--;
+								break;
+								case 4:
+								lie++;
+								break;
+								case 5:
+								hang--;
+								lie--;
+								break;
+								case 7:
+								hang--;
+								lie++;
+								break;
+								case 8:
+								hang++;
+								lie--;
+								break;
+								case 9:
+								hang++;
+								lie++;
+								break;
+							}
+							if((hang==1)||(hang==15)||(lie==1)||(lie==100)){
+							hang=lshang;
+							lie=lslie;
+							}
+					}
+				b[hang][lie]=1;
+				a[hang][lie]=4;
+			}
+	
+	
+	string cheat;
+		do{
+			hang=rand()%14+1;
+			lie=rand()%99+1;
+	}
+	while(a[hang][lie]==4);
+	a[hang][lie]=1;
+	b[hang][lie]=2;
+	ls=0;
+	cheat="";
+	picture(15,100);
+	int term=0;	//坚持回合数 
+	int tobian,tozuoyou,bian,zuoyou,change;	
+	zuoyou=1;
+	bian=1;		
+while(1){
+	int change=rand()%2;
+	if(change==1&&bian==-1){
+		for(y=1;y<=100;y++){
+			for(x=2;x<=15;x++){	
+					if(a[x][y]==4){
+				   	a[x-1][y]=4;
+				   	a[x][y]=0;			//bian=1时怪物下移 ，-1时怪物上移 
+				   	if(x==2){
+				    tobian=1;			// 有墙壁即将触碰边界则tobian=1，从下次所有墙壁移动起时所有墙壁改变移动方向 
+					}
+		   		}
+			}
+		}
+	}
+	else if(change==1&&bian==1){
+		for(y=1;y<=100;y++){
+			for(x=14;x>=1;x--){
+				{	
+					if(a[x][y]==4){
+				   	a[x+1][y]=4;
+				   	a[x][y]=0;			
+				   	if(x==14){
+				    tobian=1;			// 有墙壁即将触碰边界则tobian=1，从下次所有墙壁移动起时所有墙壁改变移动方向 
+					}	
+		   		}
+			}
+		}
+	}
+	}
+	else if(change==0&&zuoyou==1){
+		for(x=1;x<=15;x++){
+			for(y=2;y<=100;y++){	
+					if(a[x][y]==4){
+				   	a[x][y-1]=4;
+				   	a[x][y]=0;			//zuoyou=1时怪物左移，-1时怪物右移 
+				   	if(y==2){
+				    tozuoyou=1;			// 有墙壁即将触碰边界则tozuoyou=1，从下次所有墙壁移动起时所有墙壁改变移动方向 
+					}
+		   		}
+			}
+		}
+	}
+	else if(change==0&&zuoyou==-1){
+		for(x=1;x<=15;x++){
+			for(y=99;y>=1;y--){
+				{	
+					if(a[x][y]==4){
+				   	a[x][y+1]=4;
+				   	a[x][y]=0;			
+				   	if(y==99){
+				    tozuoyou=1;			// 有墙壁即将触碰边界则tozuoyou=1，从下次所有墙壁移动起时所有墙壁改变移动方向 
+					}
+		   		}
+			}
+		}
+	}
+	}
+	if(tobian==1){
+	bian=-bian;
+	tobian=0;
+	}
+	if(tozuoyou==1){
+	zuoyou=-zuoyou;
+	tozuoyou=0;
+	}
+char shuru=getch();			//输入awsd 
+lshang=hang;				//看下行解释 
+lslie=lie;         			//lslie,lshang临时储存小人现在所处位置的列行值
+if(cheat!="sandevistan"){
+a[lshang][lslie]=ls;      	//ls储存现小人所处位置原本的物件，这步将小人所处位置原先的东西重现显现出来 
+}
+switch(shuru){
+	case 119:
+		hang-=1;
+		break;
+	case 115:
+		hang+=1;
+		break;
+	case 97:
+		lie-=1;
+		break;
+	case 100:
+		lie+=1;
+		break;
+	case 112:
+	cout<<"请输入作弊码：";
+	cin>>cheat;
+}
+ls=a[hang][lie];			//储存小人即将进入的位置的物件 
+a[hang][lie]=1;
+system("cls");
+
+if(term==500){
+	victory();
+}
+else if((ls==4&&cheat!="cheat")||hang<=0||hang>15||lie<=0||lie>=100){
+        cout<<"输掉了捏，按任意按键重新来过吧~或者按0返回主菜单~/n";
+    char kongzhi=getch();	//kongzhi储存任意键，并判断是否输入为0 
+    if(kongzhi==48){
+        main();
+    }
+    system("cls");
+    goto secondlevel;			//重开 
+}
+term++;
+picture(15,100); 
+cout<<"还要坚持"<<500-term<<"回合！" ;
+} 
+}
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ void picture(int m,int n)
+ {
+ cout<<"----------------------------------------------------------------------------------------------------"<<endl<<"|";
+for (x=1;x<=m;x++){
+	for(y=1;y<=n;y++){
+		switch (a[x][y]){							//输出画面 
+			case 0:
+			cout<<" ";
+			break;
+			case 1:
+			cout<<"*";
+			break;
+			case 2:
+            cout<<"|";
+			break;
+			case 3:
+			cout<<"$";
+			break;
+			case 4:
+			cout<<"#";
+			break;
+		}
+	}
+	cout<<"|"<<endl<<"|";
+}
+cout<<"----------------------------------------------------------------------------------------------------"<<endl;
+}
+
+void victory(){
+	system("cls");
+	int sum;
+	sum=0;
+	char b[7][11]={				//输出胜利界面（一颗心） 
+	' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',
+	' ',' ','*','*','*',' ','*','*','*',' ',' ',
+	' ','*','*','*','*','*','*','*','*','*',' ',
+	' ',' ','*','*','*','*','*','*','*',' ',' ',
+	' ',' ',' ','*','*','*','*','*',' ',' ',' ',
+	' ',' ',' ',' ','*','*','*',' ',' ',' ',' ',
+	' ',' ',' ',' ',' ','*',' ',' ',' ',' ',' ',
+	};
+	if(cheat=="sandevistan"){
+		for(x=1;x<=15;x++){
+			for(y=1;y<=100;y++){
+				if(a[x][y]==1){
+				sum++;
+				}
+			}
+		}
+		cout<<"你留下了"<<sum<<"个残影！";
+		if(sum>=200){
+			cout<<"当代边缘跑者！"; 
+		} 
+	}
+	cout<<endl;
+	for(x=0;x<=6;x++){
+		for(y=0;y<=10;y++){
+			cout<<b[x][y];
+		}
+	cout<<endl<<"                                          ";
+	}
+	cout<<"\a";			//响铃 
+	system("pause");
+	system("cls");
+	main(); 
+}
